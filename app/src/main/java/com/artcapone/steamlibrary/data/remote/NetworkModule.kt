@@ -3,10 +3,10 @@ package com.artcapone.steamlibrary.data.remote
 import com.artcapone.steamlibrary.core.config.AppConfig
 import com.artcapone.steamlibrary.data.remote.api.PocketBaseApiService
 import com.artcapone.steamlibrary.data.remote.api.SteamApiService
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
-import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 object NetworkModule {
     private val json = Json {

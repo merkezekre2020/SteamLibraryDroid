@@ -6,11 +6,11 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+val steamApiKey = System.getenv("STEAM_API_KEY") ?: ""
+
 android {
     namespace = "com.artcapone.steamlibrary"
     compileSdk = 35
-
-    val steamApiKey = System.getenv("STEAM_API_KEY") ?: ""
 
     defaultConfig {
         applicationId = "com.artcapone.steamlibrary"

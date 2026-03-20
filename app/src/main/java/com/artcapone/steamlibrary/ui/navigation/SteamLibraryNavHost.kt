@@ -35,7 +35,6 @@ fun SteamLibraryNavHost(navController: NavHostController) {
             ProfileLinkScreen(
                 boundProfileText = profile?.profileUrl ?: profile?.steamId,
                 onProfileLinked = {
-                    libraryRepository.bindSteamProfile(it)
                     navController.navigate(Routes.Library)
                 }
             )

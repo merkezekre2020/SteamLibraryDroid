@@ -119,15 +119,17 @@ fun LibraryScreen(
 
         Button(
             onClick = {
-                runCatching { viewModel.sync() }
-                    .onSuccess {
-                        syncedCount = it
-                        syncError = null
-                        state = viewModel.loadState(state.query, state.selectedFilter)
-                    }
-                    .onFailure {
-                        syncError = it.message ?: "Sync başarısız"
-                    }
+                scope.launch {
+                    runCatching { viewModel.sync() }
+                        .onSuccess {
+                            syncedCount = it
+                            syncError = null
+                            state = viewModel.loadState(state.query, state.selectedFilter)
+                        }
+                        .onFailure {
+                            syncError = it.message ?: "Sync başarısız"
+                        }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {

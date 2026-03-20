@@ -64,17 +64,19 @@ fun ProfileLinkScreen(
                 }
                 Button(
                     onClick = {
-                        viewModel.linkProfile(state.input)
-                            .onSuccess { profile ->
-                                state = state.copy(
-                                    linkedProfileText = profile.profileUrl ?: profile.steamId,
-                                    errorMessage = null
-                                )
-                                onProfileLinked(state.input)
-                            }
-                            .onFailure {
-                                state = state.copy(errorMessage = it.message ?: "Profil bağlanamadı")
-                            }
+                        scope.launch {
+                            viewModel.linkProfile(state.input)
+                                .onSuccess { profile ->
+                                    state = state.copy(
+                                        linkedProfileText = profile.profileUrl ?: profile.steamId,
+                                        errorMessage = null
+                                    )
+                                    onProfileLinked(state.input)
+                                }
+                                .onFailure {
+                                    state = state.copy(errorMessage = it.message ?: "Profil bağlanamadı")
+                                }
+                        }
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {

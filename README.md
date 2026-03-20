@@ -1,10 +1,10 @@
-# SteamLibraryDroid
+# 🎮 SteamLibraryDroid
 
 Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan bir mobil uygulama iskeleti.
 
-Şu an proje **MVP/prototip scaffold** aşamasında: temel ekran akışları, veri katmanı yönü, PocketBase ve Steam entegrasyon omurgası hazır; ama uygulama hâlâ aktif geliştirme halinde.
+Şu an proje **MVP / prototip scaffold** aşamasında: temel ekran akışları, veri katmanı yönü, PocketBase ve Steam entegrasyon omurgası hazır; ama uygulama hâlâ aktif geliştirme halinde. 🚧
 
-## Özellik hedefi
+## ✨ Özellik hedefi
 
 - Steam profilini bağlama
 - Kütüphane içe aktarma
@@ -17,7 +17,7 @@ Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan
 - Favori, puan ve not yönetimi
 - Local cache + backend senkron yaklaşımı
 
-## Tech stack
+## 🧰 Tech stack
 
 - **Kotlin**
 - **Jetpack Compose**
@@ -27,15 +27,15 @@ Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan
 - **PocketBase**
 - **Material 3**
 
-## Proje yapısı
+## 📁 Proje yapısı
 
 - `app/` → Android uygulaması
 - `backend/` → PocketBase şema dosyaları
 - `docs/` → ürün, mimari ve build notları
 
-## Şu anki durum
+## 🧱 Şu anki durum
 
-Hazır olanlar:
+### ✅ Hazır olanlar
 - Compose navigation iskeleti
 - auth / profile link / library / detail / settings ekran akışı
 - fake auth ve fake repository ile çalışan örnek flow
@@ -44,22 +44,22 @@ Hazır olanlar:
 - dependency wiring başlangıcı
 - GitHub Actions ile **manuel tetiklenen debug APK workflow**
 
-Eksik / geliştirme aşamasında olanlar:
+### ⚠️ Eksik / geliştirme aşamasında olanlar
 - gerçek PocketBase auth entegrasyonu
 - gerçek Steam import akışı
 - Room + remote data + UI tam entegrasyonu
 - build kırıklarının gerçek Gradle ortamında temizlenmesi
 
-## GitHub Actions
+## ⚙️ GitHub Actions
 
 Repo içinde debug APK üretmek için bir workflow vardır:
 
 - Dosya: `.github/workflows/debug-apk.yml`
 - Tetikleme: **sadece manual (`workflow_dispatch`)**
 
-GitHub arayüzünden çalıştırınca debug APK build etmeye çalışır ve artifact olarak yükler.
+GitHub arayüzünden çalıştırınca debug APK build etmeye çalışır ve artifact olarak yükler. 📦
 
-## Lokal geliştirme notları
+## 🛠️ Lokal geliştirme notları
 
 Bu repo şu an Android Studio veya Java + Gradle bulunan bir ortamda açılıp doğrulanmalıdır.
 
@@ -72,7 +72,7 @@ Bu repo şu an Android Studio veya Java + Gradle bulunan bir ortamda açılıp d
 4. Lint dene:
    - `./gradlew :app:lint`
 
-## Konfigürasyon
+## 🔐 Konfigürasyon
 
 Örnek environment bilgileri:
 
@@ -82,7 +82,7 @@ Bu repo şu an Android Studio veya Java + Gradle bulunan bir ortamda açılıp d
 - Steam API key repoya hardcode edilmemeli
 - PocketBase URL geliştirme ortamına göre ayarlanmalı
 
-## Dokümantasyon
+## 📚 Dokümantasyon
 
 İlgili dosyalar:
 - `docs/product-plan.md`
@@ -91,6 +91,6 @@ Bu repo şu an Android Studio veya Java + Gradle bulunan bir ortamda açılıp d
 - `docs/build-status.md`
 - `docs/local-cache-plan.md`
 
-## Lisans
+## 📜 Lisans
 
 MIT

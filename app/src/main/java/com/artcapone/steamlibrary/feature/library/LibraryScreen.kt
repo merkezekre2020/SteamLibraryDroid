@@ -60,6 +60,13 @@ fun LibraryScreen(
         if (syncedCount > 0) {
             Text("Son sync: $syncedCount oyun güncellendi", modifier = Modifier.padding(top = 8.dp))
         }
+        syncError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
 
         OutlinedTextField(
             value = state.query,
@@ -102,6 +109,13 @@ fun LibraryScreen(
                         Text("Durum: ${game.status}")
                         Text("Süre: ${game.playtimeMinutes} dk")
                         if (game.favorite) Text("★ Favori")
+                    }
+                }
+            }
+        }
+    }
+}
+                      if (game.favorite) Text("★ Favori")
                     }
                 }
             }

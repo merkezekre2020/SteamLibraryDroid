@@ -1,49 +1,66 @@
 package com.artcapone.steamlibrary.data.repository
 
+import com.artcapone.steamlibrary.core.config.AppConfig
 import com.artcapone.steamlibrary.data.model.Game
 import com.artcapone.steamlibrary.data.model.SteamProfile
 import com.artcapone.steamlibrary.data.model.UserGameEntry
+import com.artcapone.steamlibrary.data.remote.SteamImporter
+import com.artcapone.steamlibrary.data.remote.SteamProfileResolver
+import kotlinx.coroutines.runBlocking
 
 class LibraryRepository {
     private var steamProfile: SteamProfile? = null
+    private val steamImporter = SteamImporter()
+    private val steamProfileResolver = SteamProfileResolver()
 
-    private val games = listOf(
-        Game(570, "Dota 2", playtimeMinutes = 1200, description = "MOBA kaosu."),
-        Game(730, "Counter-Strike 2", playtimeMinutes = 3400, description = "Klasik rekabet."),
-        Game(620, "Portal 2", playtimeMinutes = 480, description = "Bulmaca ve şahane yazım."),
-        Game(1174180, "Red Dead Redemption 2", playtimeMinutes = 860, description = "Vahşi batı ama depresif kaliteli.")
-    )
+    private var games: List<Game> = emptyList()
 
-    private val entries = mutableMapOf(
-        570L to UserGameEntry(gameId = "570", status = "playing"),
-        730L to UserGameEntry(gameId = "730", status = "completed", favorite = true),
-        620L to UserGameEntry(gameId = "620", status = "backlog", note = "Co-op için sakla."),
-        1174180L to UserGameEntry(gameId = "1174180", status = "backlog")
-    )
+    private val entries = mutableMapOf<Long, UserGameEntry>()
 
     fun bindSteamProfile(input: String): SteamProfile {
         val normalized = input.trim()
+        val resolvedSteamId = steamProfileResolver.resolveSteamId(normalized).getOrElse {
+            throw IllegalArgumentException(it.message ?: "Steam ID çözülemedi")
+        }
+
         steamProfile = SteamProfile(
-            steamId = normalized.filter { it.isDigit() }.ifBlank { "76561198000000000" },
+            steamId = resolvedSteamId,
             profileUrl = normalized.takeIf { it.startsWith("http://") || it.startsWith("https://") },
             personaName = "Steam User",
             avatarUrl = null,
             isPublic = true,
-            lastSyncedAt = "just now"
+            lastSyncedAt = null
         )
         return requireNotNull(steamProfile)
     }
 
     fun getBoundProfile(): SteamProfile? = steamProfile
 
-    fun getGames(): List<Pair<Game, UserGameEntry?>> = games.map { game -> game to entries[game.appId] }
+    fun getGames(): List<Pair<Game, UserGameEntry?>> {
+        return games.map { game -> game to entries[game.appId] }
+    }
 
     fun getGameDetail(appId: Long): Pair<Game?, UserGameEntry?> {
         return games.firstOrNull { it.appId == appId } to entries[appId]
     }
 
     fun syncLibrary(): Int {
-        steamProfile = steamProfile?.copy(lastSyncedAt = "just now")
-        return games.size
+        val profile = steamProfile ?: return 0
+        val apiKey = AppConfig.steamApiKey
+        if (apiKey.isBlank()) {
+            throw IllegalStateException("STEAM_API_KEY eksik. Workflow secret veya local env tanımla.")
+        }
+
+        val importedGames = runBlocking {
+            steamImporter.importOwnedGames(profile.steamId, apiKey)
+                .getOrElse { throw IllegalStateException(it.message ?: "Steam import başarısız") }
+        }
+
+        games = importedGames
+        importedGames.forEach { game ->
+            entries.putIfAbsent(game.appId, UserGameEntry(gameId = game.appId.toString(), status = "backlog"))
+        }
+        steamProfile = profile.copy(lastSyncedAt = "just now")
+        return importedGames.size
     }
 }

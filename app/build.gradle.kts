@@ -10,14 +10,17 @@ android {
     namespace = "com.artcapone.steamlibrary"
     compileSdk = 35
 
+    val steamApiKey = System.getenv("STEAM_API_KEY") ?: ""
+
     defaultConfig {
         applicationId = "com.artcapone.steamlibrary"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "STEAM_API_KEY", "\"$steamApiKey\"")
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -44,6 +47,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {

@@ -31,6 +31,8 @@ jobs:
           chmod +x ./gradlew
 
       - name: Build debug APK
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
         run: ./gradlew :app:assembleDebug
 
       - name: Upload debug APK artifact

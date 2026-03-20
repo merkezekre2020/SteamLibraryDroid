@@ -39,8 +39,9 @@ Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan
 - Compose navigation iskeleti
 - auth / profile link / library / detail / settings ekran akışı
 - giriş ekranında temel doğrulama
-- Steam profil bağlama ekranında input doğrulama
+- Steam profil bağlama ekranında input doğrulama ve Steam ID çözme
 - library ekranında arama + filtreleme
+- `STEAM_API_KEY` varsa gerçek owned games import denemesi
 - Steam API ve PocketBase için network iskeleti
 - Room entity / dao / database taslağı
 - dependency wiring başlangıcı

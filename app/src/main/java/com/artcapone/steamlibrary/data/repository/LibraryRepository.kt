@@ -6,7 +6,8 @@ import com.artcapone.steamlibrary.data.model.SteamProfile
 import com.artcapone.steamlibrary.data.model.UserGameEntry
 import com.artcapone.steamlibrary.data.remote.SteamImporter
 import com.artcapone.steamlibrary.data.remote.SteamProfileResolver
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class LibraryRepository {
     private var steamProfile: SteamProfile? = null
@@ -14,10 +15,9 @@ class LibraryRepository {
     private val steamProfileResolver = SteamProfileResolver()
 
     private var games: List<Game> = emptyList()
-
     private val entries = mutableMapOf<Long, UserGameEntry>()
 
-    fun bindSteamProfile(input: String): SteamProfile {
+    suspend fun bindSteamProfile(input: String): SteamProfile = withContext(Dispatchers.IO) {
         val normalized = input.trim()
         val resolvedSteamId = steamProfileResolver.resolveSteamId(normalized).getOrElse {
             throw IllegalArgumentException(it.message ?: "Steam ID çözülemedi")
@@ -31,7 +31,7 @@ class LibraryRepository {
             isPublic = true,
             lastSyncedAt = null
         )
-        return requireNotNull(steamProfile)
+        requireNotNull(steamProfile)
     }
 
     fun getBoundProfile(): SteamProfile? = steamProfile
@@ -44,23 +44,21 @@ class LibraryRepository {
         return games.firstOrNull { it.appId == appId } to entries[appId]
     }
 
-    fun syncLibrary(): Int {
-        val profile = steamProfile ?: return 0
+    suspend fun syncLibrary(): Int = withContext(Dispatchers.IO) {
+        val profile = steamProfile ?: return@withContext 0
         val apiKey = AppConfig.steamApiKey
         if (apiKey.isBlank()) {
             throw IllegalStateException("STEAM_API_KEY eksik. Workflow secret veya local env tanımla.")
         }
 
-        val importedGames = runBlocking {
-            steamImporter.importOwnedGames(profile.steamId, apiKey)
-                .getOrElse { throw IllegalStateException(it.message ?: "Steam import başarısız") }
-        }
+        val importedGames = steamImporter.importOwnedGames(profile.steamId, apiKey)
+            .getOrElse { throw IllegalStateException(it.message ?: "Steam import başarısız") }
 
         games = importedGames
         importedGames.forEach { game ->
             entries.putIfAbsent(game.appId, UserGameEntry(gameId = game.appId.toString(), status = "backlog"))
         }
         steamProfile = profile.copy(lastSyncedAt = "just now")
-        return importedGames.size
+        importedGames.size
     }
 }

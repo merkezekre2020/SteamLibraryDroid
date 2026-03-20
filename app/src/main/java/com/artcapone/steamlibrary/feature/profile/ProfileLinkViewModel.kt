@@ -6,7 +6,7 @@ import com.artcapone.steamlibrary.data.repository.LibraryRepository
 class ProfileLinkViewModel(
     private val repository: LibraryRepository
 ) {
-    fun linkProfile(input: String): Result<SteamProfile> {
+    suspend fun linkProfile(input: String): Result<SteamProfile> {
         val trimmed = input.trim()
         if (trimmed.isBlank()) {
             return Result.failure(IllegalArgumentException("Steam ID veya profil URL gir."))

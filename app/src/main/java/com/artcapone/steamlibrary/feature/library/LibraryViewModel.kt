@@ -55,7 +55,7 @@ class LibraryViewModel(
         return loadState(query = currentQuery, selectedFilter = filter)
     }
 
-    fun sync(): Int = repository.syncLibrary()
+    suspend fun sync(): Int = repository.syncLibrary()
 
     private fun filterItems(
         items: List<GameListItem>,

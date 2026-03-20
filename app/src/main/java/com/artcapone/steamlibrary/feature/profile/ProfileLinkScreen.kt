@@ -30,6 +30,7 @@ fun ProfileLinkScreen(
 ) {
     var state by remember { mutableStateOf(ProfileLinkUiState(linkedProfileText = boundProfileText)) }
     val viewModel = remember { ProfileLinkViewModel(AppContainer.libraryRepository) }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier

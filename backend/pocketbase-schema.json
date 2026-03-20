@@ -1,0 +1,54 @@
+{
+  "collections": [
+    {
+      "name": "steam_profiles",
+      "type": "base",
+      "fields": [
+        {"name": "userId", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "maxSelect": 1},
+        {"name": "steamId", "type": "text", "required": true},
+        {"name": "profileUrl", "type": "url"},
+        {"name": "personaName", "type": "text"},
+        {"name": "avatarUrl", "type": "url"},
+        {"name": "isPublic", "type": "bool"},
+        {"name": "lastSyncedAt", "type": "date"}
+      ]
+    },
+    {
+      "name": "games",
+      "type": "base",
+      "fields": [
+        {"name": "appId", "type": "number", "required": true},
+        {"name": "name", "type": "text", "required": true},
+        {"name": "headerImage", "type": "url"},
+        {"name": "capsuleImage", "type": "url"},
+        {"name": "playtimeForever", "type": "number"},
+        {"name": "playtimeRecent", "type": "number"},
+        {"name": "source", "type": "text"},
+        {"name": "rawJson", "type": "json"}
+      ]
+    },
+    {
+      "name": "user_game_entries",
+      "type": "base",
+      "fields": [
+        {"name": "userId", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "maxSelect": 1},
+        {"name": "gameId", "type": "relation", "required": true, "collectionId": "games", "maxSelect": 1},
+        {"name": "status", "type": "select", "values": ["backlog", "playing", "completed", "dropped"]},
+        {"name": "rating", "type": "number"},
+        {"name": "note", "type": "editor"},
+        {"name": "favorite", "type": "bool"},
+        {"name": "tags", "type": "json"}
+      ]
+    },
+    {
+      "name": "sync_logs",
+      "type": "base",
+      "fields": [
+        {"name": "userId", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "maxSelect": 1},
+        {"name": "status", "type": "select", "values": ["success", "error", "running"]},
+        {"name": "message", "type": "text"},
+        {"name": "syncedCount", "type": "number"}
+      ]
+    }
+  ]
+}

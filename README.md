@@ -1,4 +1,4 @@
-# Steam Library Manager
+# SteamLibraryDroid
 
 Android için Steam kütüphane yöneticisi MVP scaffold.
 

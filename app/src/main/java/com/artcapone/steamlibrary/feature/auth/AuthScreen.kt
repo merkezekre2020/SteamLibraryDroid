@@ -23,7 +23,7 @@ import com.artcapone.steamlibrary.data.AppContainer
 fun AuthScreen(onContinue: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf<String?>(null) }
+    var authState by remember { mutableStateOf(AuthUiState()) }
     val viewModel = remember { AuthViewModel(AppContainer.authRepository) }
 
     Column(
@@ -35,33 +35,40 @@ fun AuthScreen(onContinue: () -> Unit) {
     ) {
         Text("Steam Library Manager", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "Fake auth akışı hazır. Sonra PocketBase'e bağlanacak.",
+            "Giriş akışı production-ready olacak şekilde toparlanıyor. Şimdilik local auth guard var.",
             modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
         )
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                authState = authState.copy(errorMessage = null)
+            },
             label = { Text("E-posta") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                authState = authState.copy(errorMessage = null)
+            },
             label = { Text("Şifre") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp)
         )
-        if (error != null) {
+        authState.errorMessage?.let {
             Text(
-                text = error!!,
+                text = it,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(top = 12.dp)
             )
         }
         Button(
             onClick = {
-                if (viewModel.login(email, password)) onContinue() else error = "Geçerli bir e-posta ve en az 4 karakter şifre gir."
+                authState = viewModel.login(email, password)
+                if (authState.isLoggedIn) onContinue()
             },
             modifier = Modifier.padding(top = 24.dp)
         ) {

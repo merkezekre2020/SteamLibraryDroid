@@ -7,8 +7,8 @@ class LibraryViewModel(
     private val repository: LibraryRepository,
     private val getCachedLibraryUseCase: GetCachedLibraryUseCase? = null
 ) {
-    fun loadState(): LibraryUiState {
-        val items = repository.getGames().map { (game, entry) ->
+    private fun allItems(): List<GameListItem> {
+        return repository.getGames().map { (game, entry) ->
             GameListItem(
                 appId = game.appId,
                 name = game.name,
@@ -18,7 +18,19 @@ class LibraryViewModel(
                 favorite = entry?.favorite ?: false
             )
         }
-        return LibraryUiState(games = items)
+    }
+
+    fun loadState(query: String = "", selectedFilter: String = "all"): LibraryUiState {
+        val filtered = filterItems(
+            items = allItems(),
+            query = query,
+            selectedFilter = selectedFilter
+        )
+        return LibraryUiState(
+            query = query,
+            selectedFilter = selectedFilter,
+            games = filtered
+        )
     }
 
     suspend fun loadCachedState(): LibraryUiState {
@@ -35,5 +47,30 @@ class LibraryViewModel(
         return LibraryUiState(games = cachedItems)
     }
 
+    fun updateQuery(currentFilter: String, query: String): LibraryUiState {
+        return loadState(query = query, selectedFilter = currentFilter)
+    }
+
+    fun updateFilter(currentQuery: String, filter: String): LibraryUiState {
+        return loadState(query = currentQuery, selectedFilter = filter)
+    }
+
     fun sync(): Int = repository.syncLibrary()
+
+    private fun filterItems(
+        items: List<GameListItem>,
+        query: String,
+        selectedFilter: String
+    ): List<GameListItem> {
+        val normalizedQuery = query.trim().lowercase()
+        return items.filter { item ->
+            val matchesQuery = normalizedQuery.isBlank() || item.name.lowercase().contains(normalizedQuery)
+            val matchesFilter = when (selectedFilter) {
+                "favorites" -> item.favorite
+                "backlog", "playing", "completed", "dropped" -> item.status == selectedFilter
+                else -> true
+            }
+            matchesQuery && matchesFilter
+        }
+    }
 }

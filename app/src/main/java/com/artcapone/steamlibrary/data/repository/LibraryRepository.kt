@@ -17,30 +17,33 @@ class LibraryRepository {
     private val entries = mutableMapOf(
         570L to UserGameEntry(gameId = "570", status = "playing"),
         730L to UserGameEntry(gameId = "730", status = "completed", favorite = true),
-        620L to UserGameEntry(gameId = "620", status = "backlog", note = "Co-op için sakla.")
+        620L to UserGameEntry(gameId = "620", status = "backlog", note = "Co-op için sakla."),
+        1174180L to UserGameEntry(gameId = "1174180", status = "backlog")
     )
 
     fun bindSteamProfile(input: String): SteamProfile {
+        val normalized = input.trim()
         steamProfile = SteamProfile(
-            steamId = input.filter { it.isDigit() }.ifBlank { "76561198000000000" },
-            profileUrl = input,
-            personaName = "Kerem",
+            steamId = normalized.filter { it.isDigit() }.ifBlank { "76561198000000000" },
+            profileUrl = normalized.takeIf { it.startsWith("http://") || it.startsWith("https://") },
+            personaName = "Steam User",
             avatarUrl = null,
             isPublic = true,
             lastSyncedAt = "just now"
         )
-        return steamProfile!!
+        return requireNotNull(steamProfile)
     }
 
     fun getBoundProfile(): SteamProfile? = steamProfile
 
-    fun getGames(): List<Pair<Game, UserGameEntry?>> {
-        return games.map { game -> game to entries[game.appId] }
-    }
+    fun getGames(): List<Pair<Game, UserGameEntry?>> = games.map { game -> game to entries[game.appId] }
 
     fun getGameDetail(appId: Long): Pair<Game?, UserGameEntry?> {
         return games.firstOrNull { it.appId == appId } to entries[appId]
     }
 
-    fun syncLibrary(): Int = games.size
+    fun syncLibrary(): Int {
+        steamProfile = steamProfile?.copy(lastSyncedAt = "just now")
+        return games.size
+    }
 }

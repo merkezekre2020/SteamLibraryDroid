@@ -15,12 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.artcapone.steamlibrary.data.AppContainer
@@ -61,24 +61,36 @@ fun LibraryScreen(
             Text("Son sync: $syncedCount oyun güncellendi", modifier = Modifier.padding(top = 8.dp))
         }
 
+        OutlinedTextField(
+            value = state.query,
+            onValueChange = { state = viewModel.updateQuery(state.selectedFilter, it) },
+            label = { Text("Oyun ara") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        )
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedTextField(
-                value = state.query,
-                onValueChange = {},
-                label = { Text("Oyun ara") },
-                modifier = Modifier.weight(1f)
-            )
-            Button(onClick = { syncedCount = viewModel.sync() }) {
-                Text("Sync")
+            listOf("all", "favorites", "backlog", "playing", "completed").forEach { filter ->
+                Button(onClick = { state = viewModel.updateFilter(state.query, filter) }) {
+                    Text(filter)
+                }
             }
         }
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Button(onClick = { syncedCount = viewModel.sync() }) {
+            Text("Sync")
+        }
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(top = 12.dp)
+        ) {
             items(state.games) { game ->
                 Card(
                     modifier = Modifier
@@ -89,9 +101,7 @@ fun LibraryScreen(
                         Text(game.name, style = MaterialTheme.typography.titleMedium)
                         Text("Durum: ${game.status}")
                         Text("Süre: ${game.playtimeMinutes} dk")
-                        if (game.favorite) {
-                            Text("★ Favori")
-                        }
+                        if (game.favorite) Text("★ Favori")
                     }
                 }
             }

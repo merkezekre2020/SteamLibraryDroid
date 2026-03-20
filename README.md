@@ -2,7 +2,7 @@
 
 Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan bir mobil uygulama iskeleti.
 
-Şu an proje **MVP / prototip scaffold** aşamasında: temel ekran akışları, veri katmanı yönü, PocketBase ve Steam entegrasyon omurgası hazır; ama uygulama hâlâ aktif geliştirme halinde. 🚧
+Şu an proje **MVP / prototip scaffold** aşamasında ama artık daha production-odaklı akışlar içeriyor: giriş doğrulaması, Steam profil bağlama doğrulaması, kütüphane arama/filtreleme ve ayarlar ekranı biraz daha gerçekçi hale getirildi. 🚧
 
 ## ✨ Özellik hedefi
 
@@ -21,7 +21,7 @@ Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan
 
 - **Kotlin**
 - **Jetpack Compose**
-- **MVVM**
+- **MVVM-benzeri yapı**
 - **Retrofit**
 - **Room**
 - **PocketBase**
@@ -38,7 +38,9 @@ Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan
 ### ✅ Hazır olanlar
 - Compose navigation iskeleti
 - auth / profile link / library / detail / settings ekran akışı
-- fake auth ve fake repository ile çalışan örnek flow
+- giriş ekranında temel doğrulama
+- Steam profil bağlama ekranında input doğrulama
+- library ekranında arama + filtreleme
 - Steam API ve PocketBase için network iskeleti
 - Room entity / dao / database taslağı
 - dependency wiring başlangıcı
@@ -48,7 +50,8 @@ Steam kütüphaneni Android tarafında daha düzenli yönetmek için hazırlanan
 - gerçek PocketBase auth entegrasyonu
 - gerçek Steam import akışı
 - Room + remote data + UI tam entegrasyonu
-- build kırıklarının gerçek Gradle ortamında temizlenmesi
+- AndroidX ViewModel + coroutine state yönetiminin tam taşınması
+- build kırıklarının gerçek Gradle ortamında tamamen temizlenmesi
 
 ## ⚙️ GitHub Actions
 
